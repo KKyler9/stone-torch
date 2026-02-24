@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/Player3D.gd" id="1_p3d"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.35
+height = 1.1
+
+[node name="Player3D" type="CharacterBody3D"]
+script = ExtResource("1_p3d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="Head" type="Node3D" parent="."]
+position = Vector3(0, 1.45, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+
+[node name="TorchLight" type="OmniLight3D" parent="Head"]
+position = Vector3(0.3, -0.2, -0.6)
+light_color = Color(1, 0.73, 0.42, 1)
+light_energy = 1.8
+omni_range = 13.0
