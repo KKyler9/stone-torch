@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
+const TORCH_TEX := preload("res://assets/textures/torch.svg")
+
 signal flame_state_changed(state_name: String)
 signal torch_extinguished
 
@@ -104,7 +106,7 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 func _update_flame_state() -> void:
-	var ratio := flame_value / max(flame_max, 0.01)
+	var ratio: float = float(flame_value) / max(float(flame_max), 0.01)
 	var new_state := state_name
 	if ratio > 0.66:
 		new_state = "healthy"
@@ -120,6 +122,6 @@ func _update_flame_state() -> void:
 		flame_state_changed.emit(state_name)
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 9.0, Color(0.98, 0.8, 0.3))
+	draw_texture(TORCH_TEX, -TORCH_TEX.get_size() * 0.5)
 	var alpha := 0.16 if not is_cupping else 0.09
 	draw_arc(Vector2.ZERO, light_radius(), 0.0, TAU, 44, Color(1.0, 0.75, 0.25, alpha), 3.0)

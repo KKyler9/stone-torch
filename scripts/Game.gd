@@ -4,6 +4,10 @@ const ZONE_1 := 1
 const ZONE_2 := 2
 const ZONE_3 := 3
 
+const GROUND_TEX := preload("res://assets/textures/ground_tile.svg")
+const TREE_TEX := preload("res://assets/textures/tree.svg")
+const GRASS_TEX := preload("res://assets/textures/grass_patch.svg")
+
 const FUEL_TABLE := [
 	{"kind": "moss", "value": 16.0},
 	{"kind": "cloth", "value": 22.0},
@@ -82,6 +86,7 @@ func start_zone(target_zone: int) -> void:
 	update_hud()
 
 func setup_cave_zone() -> void:
+	spawn_environment_art(3, 10)
 	beacon_position = Vector2(1140, 640)
 	objective_count = 7
 	spawn_fuels(8, Rect2(120, 110, 940, 500), false)
@@ -90,6 +95,7 @@ func setup_cave_zone() -> void:
 	hud.set_prompt("Cave: gather fuel, learn the dark, reach the tunnel exit.")
 
 func setup_forest_zone() -> void:
+	spawn_environment_art(14, 22)
 	beacon_position = Vector2(1170, 660)
 	objective_count = 10
 	var shift := randi_range(-70, 70)
@@ -99,6 +105,7 @@ func setup_forest_zone() -> void:
 	hud.set_prompt("Forest: long sightlines, wind gusts, and uncertain paths.")
 
 func setup_village_zone() -> void:
+	spawn_environment_art(8, 16)
 	beacon_position = Vector2(1180, 650)
 	objective_count = 9
 	var shift := randi_range(-40, 40)
@@ -106,6 +113,30 @@ func setup_village_zone() -> void:
 	spawn_creatures(7, Rect2(180, 120, 900, 520))
 	player.set_environment_pressures(0.4, 0.9)
 	hud.set_prompt("Ash Village: escort hope to the unlit tower.")
+
+
+func spawn_environment_art(tree_count: int, grass_count: int) -> void:
+	for y in range(0, 12):
+		for x in range(0, 20):
+			var tile := Sprite2D.new()
+			tile.texture = GROUND_TEX
+			tile.position = Vector2(32 + x * 64, 32 + y * 64)
+			tile.z_index = -20
+			add_child(tile)
+
+	for _i in range(grass_count):
+		var grass := Sprite2D.new()
+		grass.texture = GRASS_TEX
+		grass.position = Vector2(randf_range(60, 1220), randf_range(60, 680))
+		grass.z_index = -10
+		add_child(grass)
+
+	for _i in range(tree_count):
+		var tree := Sprite2D.new()
+		tree.texture = TREE_TEX
+		tree.position = Vector2(randf_range(80, 1200), randf_range(80, 680))
+		tree.z_index = -9
+		add_child(tree)
 
 func spawn_fuels(amount: int, region: Rect2, empowered: bool) -> void:
 	for _i in range(amount):

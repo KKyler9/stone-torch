@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Monster
 
+const MONSTER_TEX := preload("res://assets/textures/monster.svg")
+
 var base_speed := 55.0
 var panic_bonus := 40.0
 var stand_distance := 130.0
@@ -55,9 +57,4 @@ func _physics_process(_delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	var body_col := Color(0.25, 0.06, 0.06)
-	if behavior_state == "claim":
-		body_col = Color(0.45, 0.08, 0.08)
-	draw_circle(Vector2.ZERO, 9.0, body_col)
-	draw_circle(Vector2(-3.0, -2.0), 1.4, Color.WHITE)
-	draw_circle(Vector2(3.0, -2.0), 1.4, Color.WHITE)
+	draw_texture(MONSTER_TEX, -MONSTER_TEX.get_size() * 0.5)

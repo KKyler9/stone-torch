@@ -1,6 +1,10 @@
 extends Area2D
 class_name FuelPickup
 
+const MOSS_TEX := preload("res://assets/textures/moss.svg")
+const CLOTH_TEX := preload("res://assets/textures/cloth.svg")
+const RESIN_TEX := preload("res://assets/textures/resin.svg")
+
 signal picked(kind: String, amount: float)
 
 var kind := "moss"
@@ -26,9 +30,9 @@ func _on_body_entered(body: Node) -> void:
 		queue_free()
 
 func _draw() -> void:
-	var col := Color(0.2, 0.8, 0.35)
+	var tex: Texture2D = MOSS_TEX
 	if kind == "cloth":
-		col = Color(0.8, 0.8, 0.8)
+		tex = CLOTH_TEX
 	elif kind == "resin":
-		col = Color(1.0, 0.65, 0.2)
-	draw_circle(Vector2.ZERO, 7.0, col)
+		tex = RESIN_TEX
+	draw_texture(tex, -tex.get_size() * 0.5)

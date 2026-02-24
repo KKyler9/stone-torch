@@ -67,3 +67,16 @@ This is still a prototype layer (debug visuals). Next iteration should add:
 - Real lighting and shadow systems
 - Audio-driven fear cues and jumpscare pacing
 - Authored encounter scripting per zone
+
+
+## Placeholder Art Included
+
+Simple SVG placeholder textures are now included in `assets/textures/` for:
+- ground tile
+- grass patch
+- tree
+- torch
+- monster
+- fuel items (moss/cloth/resin)
+
+These are intentionally lightweight prototypes so you can replace them later with hand-made art packs.
