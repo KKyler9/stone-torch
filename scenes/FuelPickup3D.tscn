@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/FuelPickup3D.gd" id="1_f3d"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fuel"]
+radius = 0.55
+
+[sub_resource type="SphereMesh" id="SphereMesh_fuel"]
+radius = 0.35
+height = 0.7
+
+[node name="FuelPickup3D" type="Area3D"]
+script = ExtResource("1_f3d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_fuel")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_fuel")
+position = Vector3(0, 0.4, 0)
