@@ -1,45 +1,82 @@
 extends CharacterBody2D
 class_name Player
 
-signal torch_changed(current: float, max_value: float)
-signal player_died
+signal flame_state_changed(state_name: String)
+signal torch_extinguished
 
-var walk_speed := 120.0
-var sprint_speed := 190.0
-var crouch_speed := 75.0
+var walk_speed := 95.0
+var sprint_speed := 145.0
+var crouch_speed := 65.0
 
 var stamina_max := 100.0
 var stamina := 100.0
-var stamina_drain := 26.0
-var stamina_regen := 18.0
+var stamina_drain := 20.0
+var stamina_regen := 16.0
 
-var torch_max := 60.0
-var torch_current := 60.0
-var torch_drain_multiplier := 1.0
-var light_radius := 170.0
+var flame_value := 100.0
+var flame_max := 100.0
+var base_drain := 3.2
+var wind_pressure := 0.0
+var ash_pressure := 0.0
+var is_cupping := false
+var is_refueling := false
+
+var state_name := "healthy"
 
 func apply_upgrades(upgrades: Dictionary) -> void:
-	if upgrades.has("fuel_bonus"):
-		torch_max += upgrades["fuel_bonus"]
-		torch_current = min(torch_current, torch_max)
-	if upgrades.has("light_bonus"):
-		light_radius += upgrades["light_bonus"]
-	if upgrades.has("stamina_bonus"):
-		stamina_max += upgrades["stamina_bonus"]
-		stamina = stamina_max
+	flame_max += float(upgrades.get("longer_flame", 0.0))
+	flame_value = flame_max
+	stamina_max += float(upgrades.get("stamina", 0.0))
+	stamina = stamina_max
 
-func add_torch_time(amount: float) -> void:
-	torch_current = clamp(torch_current + amount, 0.0, torch_max)
-	torch_changed.emit(torch_current, torch_max)
+func set_environment_pressures(wind: float, ash: float) -> void:
+	wind_pressure = wind
+	ash_pressure = ash
+
+func light_radius() -> float:
+	match state_name:
+		"healthy":
+			return 210.0
+		"hungry":
+			return 160.0
+		"failing":
+			return 120.0
+		"ember":
+			return 80.0
+		_:
+			return 60.0
+
+func can_refuel() -> bool:
+	return not is_refueling and flame_value > 0.0 and flame_value < flame_max - 5.0
+
+func feed_flame(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	is_refueling = true
+	velocity = Vector2.ZERO
+	await get_tree().create_timer(0.9).timeout
+	flame_value = clamp(flame_value + amount, 0.0, flame_max)
+	is_refueling = false
+	_update_flame_state()
 
 func _ready() -> void:
-	torch_changed.emit(torch_current, torch_max)
+	var cs := CollisionShape2D.new()
+	var shape := CircleShape2D.new()
+	shape.radius = 9.0
+	cs.shape = shape
+	add_child(cs)
 
 func _physics_process(delta: float) -> void:
+	if is_refueling:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	is_cupping = Input.is_action_pressed("crouch")
+
 	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var speed := walk_speed
-
-	if Input.is_action_pressed("crouch"):
+	if is_cupping:
 		speed = crouch_speed
 	elif Input.is_action_pressed("sprint") and stamina > 0.0 and input_dir.length() > 0.1:
 		speed = sprint_speed
@@ -51,12 +88,38 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _process(delta: float) -> void:
-	torch_current = max(0.0, torch_current - delta * torch_drain_multiplier)
-	torch_changed.emit(torch_current, torch_max)
-	if torch_current <= 0.0:
-		player_died.emit()
+	if flame_value <= 0.0:
+		return
+
+	var cup_mod := 0.55 if is_cupping else 1.0
+	var drain := (base_drain + ash_pressure + wind_pressure) * cup_mod
+	flame_value = max(0.0, flame_value - drain * delta)
+	_update_flame_state()
+
+	if flame_value <= 0.0:
+		state_name = "out"
+		flame_state_changed.emit(state_name)
+		torch_extinguished.emit()
+
 	queue_redraw()
 
+func _update_flame_state() -> void:
+	var ratio := flame_value / max(flame_max, 0.01)
+	var new_state := state_name
+	if ratio > 0.66:
+		new_state = "healthy"
+	elif ratio > 0.4:
+		new_state = "hungry"
+	elif ratio > 0.2:
+		new_state = "failing"
+	else:
+		new_state = "ember"
+
+	if new_state != state_name:
+		state_name = new_state
+		flame_state_changed.emit(state_name)
+
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 10.0, Color(0.95, 0.85, 0.4))
-	draw_arc(Vector2.ZERO, light_radius, 0.0, TAU, 48, Color(1.0, 0.75, 0.25, 0.15), 3.0)
+	draw_circle(Vector2.ZERO, 9.0, Color(0.98, 0.8, 0.3))
+	var alpha := 0.16 if not is_cupping else 0.09
+	draw_arc(Vector2.ZERO, light_radius(), 0.0, TAU, 44, Color(1.0, 0.75, 0.25, alpha), 3.0)

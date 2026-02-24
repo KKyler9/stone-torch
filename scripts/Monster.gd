@@ -1,12 +1,21 @@
 extends CharacterBody2D
 class_name Monster
 
-signal player_caught
-
-var move_speed := 90.0
-var fear_speed := 130.0
-var catch_distance := 16.0
+var base_speed := 55.0
+var panic_bonus := 40.0
+var stand_distance := 130.0
 var chase_target: Player
+var behavior_state := "observe"
+
+func _ready() -> void:
+	var cs := CollisionShape2D.new()
+	var shape := CircleShape2D.new()
+	shape.radius = 9.0
+	cs.shape = shape
+	add_child(cs)
+
+func set_behavior(state_name: String) -> void:
+	behavior_state = state_name
 
 func _physics_process(_delta: float) -> void:
 	if chase_target == null:
@@ -14,17 +23,41 @@ func _physics_process(_delta: float) -> void:
 
 	var to_player := chase_target.global_position - global_position
 	var distance := to_player.length()
+	if distance < 0.001:
+		return
 
-	if distance < chase_target.light_radius:
-		velocity = -to_player.normalized() * fear_speed
-	else:
-		velocity = to_player.normalized() * move_speed
-		if distance <= catch_distance and chase_target.torch_current < 5.0:
-			player_caught.emit()
+	var sprinting := Input.is_action_pressed("sprint")
+	var speed := base_speed + (panic_bonus if sprinting else 0.0)
+
+	match behavior_state:
+		"observe":
+			if distance > stand_distance:
+				velocity = to_player.normalized() * speed * 0.75
+			else:
+				velocity = Vector2.ZERO
+		"encroach":
+			if distance > 72.0:
+				velocity = to_player.normalized() * speed
+			else:
+				velocity = Vector2.ZERO
+		"claim":
+			if distance > 42.0:
+				velocity = to_player.normalized() * (speed * 1.15)
+			else:
+				velocity = Vector2.ZERO
+		_:
+			velocity = Vector2.ZERO
+
+	if distance < chase_target.light_radius() * 0.45 and behavior_state == "observe":
+		velocity -= to_player.normalized() * speed * 0.9
+
 	move_and_slide()
 	queue_redraw()
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 9.0, Color(0.3, 0.05, 0.05))
+	var body_col := Color(0.25, 0.06, 0.06)
+	if behavior_state == "claim":
+		body_col = Color(0.45, 0.08, 0.08)
+	draw_circle(Vector2.ZERO, 9.0, body_col)
 	draw_circle(Vector2(-3.0, -2.0), 1.4, Color.WHITE)
 	draw_circle(Vector2(3.0, -2.0), 1.4, Color.WHITE)

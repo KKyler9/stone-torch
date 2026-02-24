@@ -1,50 +1,69 @@
-# Stone Torch (Godot / GDScript Prototype)
+# Stone Torch (Godot 4.6.1 Prototype)
 
-A fresh Godot prototype based on your survival-horror premise:
-- You carry one dying torch.
-- Monsters stalk you and fear light, but keep following.
-- You scavenge fuel (grass, vines, moss, scrap cloth).
-- Traps punish mistakes.
-- Run ends when your torch dies (or monsters catch you in darkness).
+A short atmospheric horror roguelite prototype where the torch is the only thing that matters.
 
-## Current prototype flow
+## Identity
 
-1. **Zone 1: Cave (fixed layout feel)**
-   - Tutorial-like space with fixed objective counts.
-2. **Zone 2: Forest (procedural placement)**
-   - Pickups/traps/monster spawns are randomized each run.
-   - Torch drains faster due to "wind" pressure.
-3. **Zone 3: Village + beacon finale**
-   - Slightly varied layout.
-   - Reach beacon with enough fuel and choose:
-     - **E**: true ending (light beacon)
-     - **Q**: bad ending (smother torch)
+- No combat
+- No weapons
+- No boss fights
+- Creatures react to the **flame**, not to you
+- Failure is expected and advances progression
 
-## Meta progression (replayable loop)
+You do not lose to monsters. You lose when the flame goes out.
 
-On death, embers are banked and an auto-upgrade is applied when affordable:
-- Fuel bonus (higher fuel value per pickup)
-- Light radius bonus
-- Stamina bonus
+## Core Run Loop
 
-Progress is saved to `user://progress.cfg`.
+1. Start with a lit torch.
+2. Explore zone and collect fuel items (`moss`, `cloth`, `resin`).
+3. Manage environment pressure (wind/ash) while creatures react to flame state.
+4. Manually refuel (`E`) while standing still (high vulnerability).
+5. Reach next zone beacon.
+6. If flame extinguishes, run ends and meta progression applies.
+
+## Zone Structure
+
+- **Zone 1 — Cave (fixed-feel)**: mechanic onboarding, claustrophobic pressure.
+- **Zone 2 — Forest (semi-procedural)**: randomized placement + stronger wind pressure.
+- **Zone 3 — Ash Village (fixed-feel with variation)**: final pilgrimage to the beacon.
+
+## Flame States (No numeric bar)
+
+The game uses text/mood cues instead of explicit timers:
+
+- **Healthy** → creatures observe
+- **Hungry** → creatures encroach
+- **Failing** → shadows close in
+- **Dying Ember** → creatures claim paths
+- **Out** → run ends unless emergency relight upgrade is available
+
+## Meta Progression
+
+Each failed run grants embers and progression boosts:
+
+- Slightly longer flame
+- Wind resistance
+- Small stamina improvement
+- One emergency ember relight (consumable)
+
+World progression is tied to deaths (deeper start zones unlock over time).
 
 ## Controls
 
 - `WASD`: Move
 - `Shift`: Sprint
-- `C`: Crouch
-- `E`: Interact / good ending at beacon
-- `Q`: Trigger bad ending at beacon
+- `C`: Cup flame / cautious movement
+- `E`: Feed fuel to torch / interact with final beacon
 
 ## Run
 
-1. Open project in **Godot 4.2+**.
-2. Run `scenes/Main.tscn` (already set as main scene in `project.godot`).
+1. Open in **Godot 4.6.1**.
+2. Run project (`project.godot`) or `scenes/Main.tscn`.
 
-## Notes for next iteration
+## Notes
 
-- Add proper first-person rendering and real lighting/shadows.
-- Replace debug circles with sprites/animations/audio cues and jumpscare events.
-- Convert zone generation to tile-based navigation + authored encounter beats.
-- Add explicit in-run upgrade station/menu instead of auto-upgrades only.
+This is still a prototype layer (debug visuals). Next iteration should add:
+- First-person presentation
+- Real lighting and shadow systems
+- Audio-driven fear cues and jumpscare pacing
+- Authored encounter scripting per zone
