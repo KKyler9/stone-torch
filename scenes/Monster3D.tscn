@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/Monster3D.gd" id="1_m3d"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mon"]
+radius = 0.4
+height = 1.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_body"]
+radius = 0.6
+height = 1.2
+
+[node name="Monster3D" type="CharacterBody3D"]
+script = ExtResource("1_m3d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_mon")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_body")
+position = Vector3(0, 0.7, 0)

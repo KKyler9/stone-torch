@@ -1,82 +1,40 @@
-# Stone Torch (Godot 4.6.1 Prototype)
+# Stone Torch (Godot 4.6.1) — First-Person 3D Prototype
 
-A short atmospheric horror roguelite prototype where the torch is the only thing that matters.
+The project is now refactored into a **first-person 3D** torch-survival prototype.
 
-## Identity
+## Core Identity
 
 - No combat
 - No weapons
 - No boss fights
-- Creatures react to the **flame**, not to you
-- Failure is expected and advances progression
+- Creatures react to flame state, not direct attack logic
+- Failure is expected and feeds progression
 
-You do not lose to monsters. You lose when the flame goes out.
+## Current 3D Loop
 
-## Core Run Loop
+1. Spawn with a lit torch (first-person camera + torch light).
+2. Explore dark space, gather `moss`, `cloth`, `resin` fuel pickups.
+3. Manage flame pressure from wind/ash by zone.
+4. Press `E` to feed torch (you become immobile briefly).
+5. Reach beacon to advance zones and complete final sequence.
+6. If flame dies, run ends (or ember relight triggers if unlocked).
 
-1. Start with a lit torch.
-2. Explore zone and collect fuel items (`moss`, `cloth`, `resin`).
-3. Manage environment pressure (wind/ash) while creatures react to flame state.
-4. Manually refuel (`E`) while standing still (high vulnerability).
-5. Reach next zone beacon.
-6. If flame extinguishes, run ends and meta progression applies.
+## Zones
 
-## Zone Structure
-
-- **Zone 1 — Cave (fixed-feel)**: mechanic onboarding, claustrophobic pressure.
-- **Zone 2 — Forest (semi-procedural)**: randomized placement + stronger wind pressure.
-- **Zone 3 — Ash Village (fixed-feel with variation)**: final pilgrimage to the beacon.
-
-## Flame States (No numeric bar)
-
-The game uses text/mood cues instead of explicit timers:
-
-- **Healthy** → creatures observe
-- **Hungry** → creatures encroach
-- **Failing** → shadows close in
-- **Dying Ember** → creatures claim paths
-- **Out** → run ends unless emergency relight upgrade is available
-
-## Meta Progression
-
-Each failed run grants embers and progression boosts:
-
-- Slightly longer flame
-- Wind resistance
-- Small stamina improvement
-- One emergency ember relight (consumable)
-
-World progression is tied to deaths (deeper start zones unlock over time).
+- Zone 1: Cave onboarding
+- Zone 2: Forest pressure and wind
+- Zone 3: Ash Village final return of the flame
 
 ## Controls
 
-- `WASD`: Move
-- `Shift`: Sprint
-- `C`: Cup flame / cautious movement
-- `E`: Feed fuel to torch / interact with final beacon
-
-## Run
-
-1. Open in **Godot 4.6.1**.
-2. Run project (`project.godot`) or `scenes/Main.tscn`.
+- `WASD` Move
+- `Mouse` Look
+- `Shift` Sprint
+- `C` Cup flame / cautious movement
+- `E` Feed torch / interact beacon
+- `Esc` Release mouse cursor
 
 ## Notes
 
-This is still a prototype layer (debug visuals). Next iteration should add:
-- First-person presentation
-- Real lighting and shadow systems
-- Audio-driven fear cues and jumpscare pacing
-- Authored encounter scripting per zone
-
-
-## Placeholder Art Included
-
-Simple SVG placeholder textures are now included in `assets/textures/` for:
-- ground tile
-- grass patch
-- tree
-- torch
-- monster
-- fuel items (moss/cloth/resin)
-
-These are intentionally lightweight prototypes so you can replace them later with hand-made art packs.
+- This is still prototype geometry (primitive meshes).
+- The previous 2D placeholder art is kept in repo, but runtime is now 3D-first.
