@@ -55,11 +55,11 @@ func start_zone(target_zone: int) -> void:
 	spawn_environment(zone)
 
 	player = preload("res://scenes/Player3D.tscn").instantiate()
-	player.global_position = Vector3(0, 1.2, 0)
+	add_child(player)
+	player.position = Vector3(0, 1.2, 0)
 	player.apply_upgrades(upgrades)
 	player.flame_state_changed.connect(_on_flame_state_changed)
 	player.torch_extinguished.connect(_on_torch_extinguished)
-	add_child(player)
 
 	match zone:
 		ZONE_1:
@@ -81,14 +81,14 @@ func setup_zone(beacon: Vector3, fuel_count: int, monster_count: int, wind: floa
 	hud.set_prompt(prompt)
 
 func spawn_floor() -> void:
-	var floor := MeshInstance3D.new()
+	var floor_mesh_instance := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(90, 90)
-	floor.mesh = plane
+	floor_mesh_instance.mesh = plane
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.2, 0.19, 0.18)
-	floor.material_override = mat
-	add_child(floor)
+	floor_mesh_instance.material_override = mat
+	add_child(floor_mesh_instance)
 
 func spawn_environment(zone_id: int) -> void:
 	for i in range(24):
@@ -192,7 +192,7 @@ func _on_torch_extinguished() -> void:
 		run_over = false
 		return
 	deaths += 1
-	meta_embers += int(collected_count / 2)
+	meta_embers += int(collected_count / 2.0)
 	apply_meta_progress()
 	save_progress()
 	hud.set_prompt("Darkness absorbs you.")

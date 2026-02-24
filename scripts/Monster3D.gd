@@ -12,7 +12,7 @@ var behavior_state := "observe"
 func set_behavior(state_name: String) -> void:
 	behavior_state = state_name
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if chase_target == null:
 		return
 	var to_player := chase_target.global_position - global_position
@@ -40,4 +40,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	if eye_mesh:
-		eye_mesh.modulate = Color(1, 0.75, 0.75) if behavior_state == "claim" else Color(1, 1, 1)
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(1, 0.75, 0.75) if behavior_state == "claim" else Color(0.85, 0.85, 0.9)
+		mat.emission_enabled = true
+		mat.emission = mat.albedo_color
+		mat.emission_energy_multiplier = 0.25
+		eye_mesh.material_override = mat
