@@ -22,21 +22,21 @@ func _spawn_collectible(pos: Vector3, item_name: String, color: Color):
 	collectible.item_name = item_name
 	collectible.amount = 1
 	collectible.name = "%sCollectible" % item_name.capitalize()
-	
+
 	var mesh := MeshInstance3D.new()
 	mesh.name = "Mesh"
 	var sphere := SphereMesh.new()
 	sphere.radius = 0.2
 	mesh.mesh = sphere
-	mesh.modulate = color
+	_apply_mesh_color(mesh, color)
 	collectible.add_child(mesh)
-	
+
 	var shape := CollisionShape3D.new()
 	var collision := SphereShape3D.new()
 	collision.radius = 0.35
 	shape.shape = collision
 	collectible.add_child(shape)
-	
+
 	add_child(collectible)
 
 func _build_traps():
@@ -50,21 +50,21 @@ func _spawn_trap(pos: Vector3, trap_name: String, disable_item: String, color: C
 	trap.trap_name = trap_name
 	trap.disable_item = disable_item
 	trap.name = trap_name.replace(" ", "")
-	
+
 	var mesh := MeshInstance3D.new()
 	mesh.name = "Mesh"
 	var box := BoxMesh.new()
 	box.size = size
 	mesh.mesh = box
-	mesh.modulate = color
+	_apply_mesh_color(mesh, color)
 	trap.add_child(mesh)
-	
+
 	var shape := CollisionShape3D.new()
 	var collision := BoxShape3D.new()
 	collision.size = size
 	shape.shape = collision
 	trap.add_child(shape)
-	
+
 	add_child(trap)
 
 func _build_door():
@@ -72,18 +72,23 @@ func _build_door():
 	door.script = DOOR_SCENE
 	door.position = Vector3(0, 1.3, -8.2)
 	door.name = "CaveDoor"
-	
+
 	var mesh := MeshInstance3D.new()
 	var cube := BoxMesh.new()
 	cube.size = Vector3(2.3, 2.6, 0.3)
 	mesh.mesh = cube
-	mesh.modulate = Color(0.4, 0.22, 0.15)
+	_apply_mesh_color(mesh, Color(0.4, 0.22, 0.15))
 	door.add_child(mesh)
-	
+
 	var shape := CollisionShape3D.new()
 	var collision := BoxShape3D.new()
 	collision.size = Vector3(2.3, 2.6, 0.3)
 	shape.shape = collision
 	door.add_child(shape)
-	
+
 	add_child(door)
+
+func _apply_mesh_color(mesh: MeshInstance3D, color: Color):
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	mesh.material_override = material

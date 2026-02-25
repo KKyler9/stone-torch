@@ -33,9 +33,11 @@ func interact(player):
 		monitoring = false
 		if player.has_method("show_feedback"):
 			player.show_feedback("Disabled %s" % trap_name)
-		var owner = get_node_or_null("Mesh")
-		if owner and owner is MeshInstance3D:
-			(owner as MeshInstance3D).modulate = Color(0.4, 0.4, 0.4)
+		var mesh := get_node_or_null("Mesh") as MeshInstance3D
+		if mesh:
+			var material := StandardMaterial3D.new()
+			material.albedo_color = Color(0.4, 0.4, 0.4)
+			mesh.material_override = material
 	else:
 		if player and player.has_method("show_feedback"):
 			player.show_feedback("Need %s to disable %s" % [disable_item, trap_name])
