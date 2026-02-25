@@ -34,22 +34,26 @@ func _create_hud():
 
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(root)
 
 	prompt_label = Label.new()
 	prompt_label.position = Vector2(20, 20)
 	prompt_label.text = ""
+	prompt_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(prompt_label)
 
 	feedback_label = Label.new()
 	feedback_label.position = Vector2(20, 50)
 	feedback_label.text = ""
+	feedback_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(feedback_label)
 
 	for i in slot_items.size():
 		var item_name = slot_items[i]
 		var label := Label.new()
 		label.position = Vector2(20 + i * 160, 680)
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.add_child(label)
 		hud_labels[item_name] = label
 
