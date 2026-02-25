@@ -19,7 +19,7 @@ var selected_slot := 0
 @onready var camera: Camera3D = $Camera3D
 @onready var torch: Node3D = $TorchPivot
 
-var hud: PlayerHUD
+var hud
 
 func _ready():
 	add_to_group("player")
@@ -30,7 +30,7 @@ func _ready():
 func _setup_hud():
 	if not hud_scene:
 		return
-	hud = hud_scene.instantiate() as PlayerHUD
+	hud = hud_scene.instantiate()
 	if not hud:
 		return
 	add_child(hud)
