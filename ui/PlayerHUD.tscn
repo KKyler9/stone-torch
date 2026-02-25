@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/PlayerHUD.gd" id="1_hud"]
+
+[node name="PlayerHUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PromptLabel" type="Label" parent="Root"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 520.0
+offset_bottom = 43.0
+text = ""
+
+[node name="FeedbackLabel" type="Label" parent="Root"]
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 700.0
+offset_bottom = 73.0
+text = ""
+
+[node name="Hotbar" type="Control" parent="Root"]
+offset_left = 20.0
+offset_top = 680.0
+offset_right = 560.0
+offset_bottom = 720.0
+
+[node name="Slot1Label" type="Label" parent="Root/Hotbar"]
+offset_right = 160.0
+offset_bottom = 24.0
+text = "[1] Moss x0"
+
+[node name="Slot2Label" type="Label" parent="Root/Hotbar"]
+offset_left = 160.0
+offset_right = 320.0
+offset_bottom = 24.0
+text = "[2] Cloth x0"
+
+[node name="Slot3Label" type="Label" parent="Root/Hotbar"]
+offset_left = 320.0
+offset_right = 480.0
+offset_bottom = 24.0
+text = "[3] Resin x0"
