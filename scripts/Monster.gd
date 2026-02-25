@@ -1,60 +1,76 @@
-extends CharacterBody2D
-class_name Monster
+extends CharacterBody3D
 
-const MONSTER_TEX := preload("res://assets/textures/monster.svg")
+@export var speed := 1.6
+@export var hunt_speed_multiplier := 1.8
+@export var light_buffer := 2.0   # extra distance outside light before approaching
 
-var base_speed := 55.0
-var panic_bonus := 40.0
-var stand_distance := 130.0
-var chase_target: Player
-var behavior_state := "observe"
+var player : Node3D
+var torch : Node
 
-func _ready() -> void:
-	var cs := CollisionShape2D.new()
-	var shape := CircleShape2D.new()
-	shape.radius = 9.0
-	cs.shape = shape
-	add_child(cs)
+func _ready():
+	player = get_tree().get_first_node_in_group("player")
 
-func set_behavior(state_name: String) -> void:
-	behavior_state = state_name
+	if player:
+		# TorchPivot is the node that has Torch.gd attached
+		torch = player.get_node("TorchPivot")
 
-func _physics_process(_delta: float) -> void:
-	if chase_target == null:
+
+func _physics_process(delta):
+
+	if not player or not torch:
 		return
 
-	var to_player := chase_target.global_position - global_position
-	var distance := to_player.length()
-	if distance < 0.001:
+	# If torch is completely out -> aggressive hunt mode
+	if torch.state == torch.TorchState.OUT:
+		chase_player(delta)
 		return
 
-	var sprinting := Input.is_action_pressed("sprint")
-	var speed := base_speed + (panic_bonus if sprinting else 0.0)
+	var light_node = torch.get_node("TorchLight")
+	var light_range = light_node.omni_range
 
-	match behavior_state:
-		"observe":
-			if distance > stand_distance:
-				velocity = to_player.normalized() * speed * 0.75
-			else:
-				velocity = Vector2.ZERO
-		"encroach":
-			if distance > 72.0:
-				velocity = to_player.normalized() * speed
-			else:
-				velocity = Vector2.ZERO
-		"claim":
-			if distance > 42.0:
-				velocity = to_player.normalized() * (speed * 1.15)
-			else:
-				velocity = Vector2.ZERO
-		_:
-			velocity = Vector2.ZERO
+	var dist = global_position.distance_to(player.global_position)
 
-	if distance < chase_target.light_radius() * 0.45 and behavior_state == "observe":
-		velocity -= to_player.normalized() * speed * 0.9
+	# Outside the torch light -> creep closer
+	if dist > light_range + light_buffer:
+		move_closer(delta)
+
+	# Inside torch light -> retreat
+	else:
+		move_away(delta)
+
+
+# ---------------------------
+# Movement Behaviors
+# ---------------------------
+
+func chase_player(delta):
+	var dir = (player.global_position - global_position)
+	dir.y = 0
+	dir = dir.normalized()
+
+	velocity.x = dir.x * speed * hunt_speed_multiplier
+	velocity.z = dir.z * speed * hunt_speed_multiplier
 
 	move_and_slide()
-	queue_redraw()
 
-func _draw() -> void:
-	draw_texture(MONSTER_TEX, -MONSTER_TEX.get_size() * 0.5)
+
+func move_closer(delta):
+	var dir = (player.global_position - global_position)
+	dir.y = 0
+	dir = dir.normalized()
+
+	velocity.x = dir.x * speed * 0.7
+	velocity.z = dir.z * speed * 0.7
+
+	move_and_slide()
+
+
+func move_away(delta):
+	var dir = (global_position - player.global_position)
+	dir.y = 0
+	dir = dir.normalized()
+
+	velocity.x = dir.x * speed
+	velocity.z = dir.z * speed
+
+	move_and_slide()

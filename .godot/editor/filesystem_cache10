@@ -1,0 +1,11 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1771983285
+Main3D.tscn::PackedScene::7069483266638963979::1771982964::0::1::::<><><>0<>0<><>::uid://c673x60pekg3g::::res://Player.tscn<>res://Monster.tscn
+Monster.tscn::PackedScene::-1::1771994354::0::1::::<><><>0<>0<><>::res://scripts/Monster.gd
+Player.tscn::PackedScene::7016498424883634950::1771980944::0::1::::<><><>0<>0<><>::uid://cqkpfcppcr5lc::::res://scripts/Player.gd<>uid://b2sxvq3by50fo::::res://scripts/Torch.gd
+::res://Assets/::1771983305
+PrototypeRoom0.1.glb::PackedScene::288171809190735504::1771983305::1771983308::1::::<><><>0<>0<>55458023ecd6b6c1b5be39ffc79d90c2<>res://.godot/imported/PrototypeRoom0.1.glb-d5561d62f54002befeff73638ed45bf5.scn::
+::res://scripts/::1771976741
+Monster.gd::GDScript::4271828502905955906::1771976741::0::1::::<>CharacterBody3D<><>0<>0<><>::
+Player.gd::GDScript::5917426455900013240::1771994296::0::1::::<>CharacterBody3D<><>0<>0<><>::
+Torch.gd::GDScript::4320113137705524524::1771994296::0::1::::<>Node3D<><>0<>0<><>::
