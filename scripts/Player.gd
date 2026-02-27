@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 @export var speed := 5.0
+@export var jump_velocity := 4.5
 @export var mouse_sensitivity := 0.003
 @export var interaction_range := 3.0
 @export var hud_scene: PackedScene = preload("res://ui/PlayerHUD.tscn")
@@ -53,6 +54,9 @@ func _unhandled_input(event):
 				_use_hotbar_slot(2)
 
 func _physics_process(delta):
+	if is_on_floor() and Input.is_action_just_pressed("jump"):
+		velocity.y = jump_velocity
+
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
