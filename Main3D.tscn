@@ -3,7 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://c673x60pekg3g" path="res://Player.tscn" id="1"]
 [ext_resource type="ArrayMesh" uid="uid://b4lnpjjmrqih" path="res://Assets/PrototypeRoom.01.obj" id="1_8iyjh"]
 [ext_resource type="PackedScene" path="res://Monster.tscn" id="2"]
-[ext_resource type="Script" path="res://scripts/CaveZone.gd" id="3"]
+[ext_resource type="Script" uid="uid://b20nhryu8e1m6" path="res://scripts/CaveZone.gd" id="3"]
+[ext_resource type="PackedScene" uid="uid://2kqsmyh4ddw0" path="res://Assets/CaveGOOD.glb" id="5_ctil2"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -39,3 +40,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.742435, 0)
 
 [node name="Monster2" parent="." unique_id=398709193 instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.73390555, 0)
+
+[node name="CaveGOOD" parent="." unique_id=774864290 instance=ExtResource("5_ctil2")]
+transform = Transform3D(4.395, 0, 0, 0, 4.395, 0, 0, 0, 4.395, 6.8369684, 4.3831553, 22.500938)
