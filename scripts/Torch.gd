@@ -175,51 +175,65 @@ func apply_visuals(delta: float):
 		return
 
 	var percent := get_fuel_percent()
-	var source_data := _source_visual_modifiers()
+	var source_data: Dictionary = _source_visual_modifiers()
+	var radius_mult := _mod(source_data, "radius_mult")
+	var energy_mult := _mod(source_data, "energy_mult")
 
 	# State-driven baseline: healthy has larger radius/energy than dying.
-	var base_range := lerp(3.0, 10.0, percent)
-	var base_energy := lerp(0.9, 3.3, percent)
+	var base_range: float = lerp(3.0, 10.0, percent)
+	var base_energy: float = lerp(0.9, 3.3, percent)
 
 	# Source overlays: resin wider radius, cloth brighter during burst, etc.
-	light.omni_range = base_range * source_data.radius_mult
+	light.omni_range = base_range * radius_mult
 
-	var target_energy := base_energy * source_data.energy_mult
-	var flicker := _sample_flicker(delta, source_data)
+	var target_energy: float = base_energy * energy_mult
+	var flicker: float = _sample_flicker(delta, source_data)
 	_smoothed_energy = lerp(_smoothed_energy, target_energy + flicker, 0.22)
 	light.light_energy = max(_smoothed_energy, 0.1)
 
 	_update_particle_visuals(percent, source_data)
 
 func _sample_flicker(delta: float, source_data: Dictionary) -> float:
-	_flicker_clock += delta * base_flicker_rate * source_data.flicker_rate_mult
-	var random_component := randf_range(-1.0, 1.0) * base_flicker_amount * source_data.flicker_amount_mult
-	return sin(_flicker_clock) * base_flicker_amount * source_data.flicker_amount_mult + random_component
+	var flicker_rate_mult := _mod(source_data, "flicker_rate_mult")
+	var flicker_amount_mult := _mod(source_data, "flicker_amount_mult")
+	_flicker_clock += delta * base_flicker_rate * flicker_rate_mult
+	var random_component: float = randf_range(-1.0, 1.0) * base_flicker_amount * flicker_amount_mult
+	return sin(_flicker_clock) * base_flicker_amount * flicker_amount_mult + random_component
 
 func _update_particle_visuals(percent: float, source_data: Dictionary):
 	var flame_material := flame_particles.process_material as ParticleProcessMaterial
 	var spark_material := spark_particles.process_material as ParticleProcessMaterial
+	var flame_mult := _mod(source_data, "flame_mult")
+	var flame_speed_mult := _mod(source_data, "flame_speed_mult")
+	var flame_spread_mult := _mod(source_data, "flame_spread_mult")
+	var spark_mult := _mod(source_data, "spark_mult")
+	var spark_spread_mult := _mod(source_data, "spark_spread_mult")
 
 	# Healthy torch => fuller, taller flame.
-	var flame_life := lerp(0.5, 1.15, percent)
-	var flame_intensity := clamp(percent * source_data.flame_mult, 0.15, 1.25)
+	var flame_life: float = lerp(0.5, 1.15, percent)
+	var flame_intensity: float = clamp(percent * flame_mult, 0.15, 1.25)
 
 	flame_particles.amount_ratio = clamp(flame_intensity, 0.15, 1.0)
 	flame_particles.lifetime = flame_life
-	flame_particles.speed_scale = lerp(0.75, 1.2, percent) * source_data.flame_speed_mult
-	flame_material.spread = lerp(6.0, 16.0, percent) * source_data.flame_spread_mult
+	flame_particles.speed_scale = lerp(0.75, 1.2, percent) * flame_speed_mult
+	flame_material.spread = lerp(6.0, 16.0, percent) * flame_spread_mult
 	flame_material.initial_velocity_min = lerp(0.35, 1.1, percent)
-	flame_material.initial_velocity_max = lerp(0.9, 2.3, percent) * source_data.flame_speed_mult
+	flame_material.initial_velocity_max = lerp(0.9, 2.3, percent) * flame_speed_mult
 
 	# Smolder stage => smaller flame but more active sparks.
-	var smolder_factor := 1.0 - percent
-	var spark_ratio := clamp(0.2 + (smolder_factor * 0.95) * source_data.spark_mult, 0.1, 1.0)
+	var smolder_factor: float = 1.0 - percent
+	var spark_ratio: float = clamp(0.2 + (smolder_factor * 0.95) * spark_mult, 0.1, 1.0)
 	spark_particles.amount_ratio = spark_ratio
 	spark_particles.lifetime = lerp(0.45, 0.9, smolder_factor)
 	spark_particles.speed_scale = lerp(1.4, 0.7, percent)
-	spark_material.spread = lerp(10.0, 36.0, smolder_factor) * source_data.spark_spread_mult
+	spark_material.spread = lerp(10.0, 36.0, smolder_factor) * spark_spread_mult
 	spark_material.initial_velocity_min = lerp(0.5, 0.9, smolder_factor)
 	spark_material.initial_velocity_max = lerp(1.2, 2.7, smolder_factor)
+
+
+func _mod(source_data: Dictionary, key: String) -> float:
+	# Godot 4.6 strict typing: dictionary lookup returns Variant, so cast explicitly.
+	return float(source_data.get(key, 1.0))
 
 func _source_visual_modifiers() -> Dictionary:
 	var data := {
