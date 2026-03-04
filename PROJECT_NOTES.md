@@ -10,7 +10,7 @@ This document explains *what each gameplay script is responsible for*, *why valu
 
 ## Script map
 - `scripts/Torch.gd`: Decay + flicker + fuel boost system, particle/light control, and AI-facing torch profile.
-- `scripts/Monster.gd`: Enemy movement logic reacting to torch profile and state.
+- `scripts/Monster.gd`: Shadow-monster behavior logic (lurker/leech/stalker) with spawn/despawn tension rules.
 - `scripts/Player.gd`: Movement, interaction, inventory, and hotbar fuel usage.
 - `scripts/CaveZone.gd`: Runtime spawning of collectibles, traps, and door.
 - `scripts/Collectible.gd`: Generic pickup behavior.
@@ -32,6 +32,18 @@ This document explains *what each gameplay script is responsible for*, *why valu
 - Stability choice: reduced flicker, slower decay, wider steady radius.
 - Better for safe traversal and keeping enemies farther away.
 
+## Shadow monster archetypes (placeholder spheres)
+All monster types share `Monster.tscn` + `scripts/Monster.gd` and are differentiated by `monster_type` + color:
+- **Lurker (common)**: stays on dark perimeter and mostly observes.
+- **Leech**: trails behind and drains torch fuel when close in darkness.
+- **Stalker**: reacts to hard player turn-arounds and may appear/disappear for tension.
+
+Behavior constraints implemented for all types:
+- avoid entering the torch light radius
+- hide/reposition if they drift into lit space
+- respawn behind player (not in front-facing cone)
+- movement is primarily driven when player moves, to keep pressure readable
+
 ## Tuning recommendations
 ### Overall pacing
 - `base_decay_rate`: global fuel drain speed.
@@ -47,12 +59,16 @@ This document explains *what each gameplay script is responsible for*, *why valu
 - resin: `resin_decay_multiplier`
 
 ### Enemy pressure
-- Tune in `Torch.gd -> get_enemy_modifiers()`:
-  - `aggression`: chase pressure
-  - `fear`: light avoidance radius
-  - `hesitation`: willingness to close in from outside light
-- Tune in `Monster.gd`:
-  - `speed`, `hunt_speed_multiplier`, `light_buffer`
+- `Monster.gd` tuning exports:
+  - `speed`
+  - `shadow_padding`
+  - `leech_drain_rate`
+  - `stalker_turn_threshold_degrees`
+  - `stalker_toggle_cooldown`
+
+### Testing pickup density
+`CaveZone.gd` currently spawns extra moss/cloth/resin nodes to speed up tuning passes.
+Trim the list in `_build_collectibles()` after balance testing.
 
 ## Source of ideas for this model
 These balancing ideas came from the requested gameplay fantasy:
