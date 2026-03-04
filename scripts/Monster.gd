@@ -40,7 +40,9 @@ func _physics_process(delta):
 	var light_node: OmniLight3D = torch.get_node("TorchLight")
 	var light_range := light_node.omni_range * fear
 	var dist := global_position.distance_to(player.global_position)
-	var source := torch.get_fuel_source_name() if torch.has_method("get_fuel_source_name") else "base"
+	var source: String = "base"
+	if torch.has_method("get_fuel_source_name"):
+		source = String(torch.get_fuel_source_name())
 
 	# Moss flames are unstable: enemies probe around the light boundary.
 	if source == "moss" and dist <= light_range + light_buffer and dist > light_range * 0.6:
