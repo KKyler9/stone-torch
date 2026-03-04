@@ -1,5 +1,8 @@
 extends Area3D
 
+# Generic collectible pickup node.
+# Runtime instances are created in CaveZone.gd.
+
 @export var item_name := "moss"
 @export var amount := 1
 

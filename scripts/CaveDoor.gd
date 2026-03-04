@@ -1,5 +1,8 @@
 extends StaticBody3D
 
+# Simple progression gate.
+# Opens once interacted with (prototype behavior: no lock condition).
+
 var is_open := false
 
 func _ready():

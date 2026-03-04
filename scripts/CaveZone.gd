@@ -1,5 +1,11 @@
 extends Node3D
 
+# CaveZone procedurally creates simple interactables at runtime.
+# This keeps the prototype scene lightweight and centralizes item/trap setup.
+# Tuning guide:
+# - Add/remove collectible spawn calls in _build_collectibles()
+# - Change trap costs by swapping disable_item in _build_traps()
+
 const COLLECTIBLE_SCENE := preload("res://scripts/Collectible.gd")
 const TRAP_SCENE := preload("res://scripts/CaveTrap.gd")
 const DOOR_SCENE := preload("res://scripts/CaveDoor.gd")
