@@ -21,26 +21,40 @@ func _physics_process(delta):
 	if not player or not torch:
 		return
 
-	var profile := torch.get_enemy_modifiers() if torch.has_method("get_enemy_modifiers") else {"aggression": 1.0, "fear": 1.0, "hesitation": 1.0}
+	var profile: Dictionary = {
+		"aggression": 1.0,
+		"fear": 1.0,
+		"hesitation": 1.0,
+	}
+	if torch.has_method("get_enemy_modifiers"):
+		profile = torch.get_enemy_modifiers()
+
+	var aggression := _profile_value(profile, "aggression")
+	var fear := _profile_value(profile, "fear")
+	var hesitation := _profile_value(profile, "hesitation")
 
 	if torch.state == torch.TorchState.OUT:
-		chase_player(delta, profile.aggression)
+		chase_player(delta, aggression)
 		return
 
 	var light_node: OmniLight3D = torch.get_node("TorchLight")
-	var light_range := light_node.omni_range * profile.fear
+	var light_range := light_node.omni_range * fear
 	var dist := global_position.distance_to(player.global_position)
 	var source := torch.get_fuel_source_name() if torch.has_method("get_fuel_source_name") else "base"
 
 	# Moss flames are unstable: enemies probe around the light boundary.
 	if source == "moss" and dist <= light_range + light_buffer and dist > light_range * 0.6:
-		strafe_player(delta, profile.aggression)
+		strafe_player(delta, aggression)
 		return
 
-	if dist > light_range + (light_buffer * profile.hesitation):
-		move_closer(delta, profile.aggression)
+	if dist > light_range + (light_buffer * hesitation):
+		move_closer(delta, aggression)
 	else:
-		move_away(delta, profile.fear)
+		move_away(delta, fear)
+
+func _profile_value(profile: Dictionary, key: String) -> float:
+	# Godot 4.6 strict typing: dictionary lookups are Variant unless cast.
+	return float(profile.get(key, 1.0))
 
 func chase_player(_delta: float, aggression: float):
 	var dir := (player.global_position - global_position)
