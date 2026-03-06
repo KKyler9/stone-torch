@@ -42,15 +42,15 @@ curve = SubResource("Curve_tt86v")
 lifetime_randomness = 0.08
 particle_flag_rotate_y = true
 emission_shape = 1
-emission_sphere_radius = 0.2
+emission_sphere_radius = 0.12
 angle_min = -179.99998
 angle_max = 180.00002
 direction = Vector3(0, 1, 0)
-spread = 13.235
-initial_velocity_min = 1.0
-initial_velocity_max = 2.0
+spread = 8.6
+initial_velocity_min = 0.6
+initial_velocity_max = 1.35
 radial_velocity_min = -2.2351742e-05
-radial_velocity_max = 0.49997765
+radial_velocity_max = 0.12
 gravity = Vector3(0, 1, 0)
 scale_min = 0.9
 scale_max = 1.4
@@ -102,6 +102,7 @@ color = Color(0.94, 0.3565733, 0.2256, 1)
 [sub_resource type="QuadMesh" id="QuadMesh_tt86v"]
 
 [node name="FireParticle" type="GPUParticles3D" unique_id=1293562474]
+local_coords = false
 material_override = SubResource("StandardMaterial3D_iquev")
 amount = 50
 lifetime = 1.2
