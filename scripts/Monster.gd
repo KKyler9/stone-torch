@@ -103,8 +103,8 @@ func _stalker_follow(_delta: float):
 
 func _process_stalker_visibility():
 	# 180-style turn detection: if player rapidly changes yaw, stalker may pop.
-	var current_yaw := player.rotation.y
-	var turn_delta := abs(wrapf(current_yaw - _last_player_yaw, -PI, PI))
+	var current_yaw: float = player.rotation.y
+	var turn_delta: float = abs(wrapf(current_yaw - _last_player_yaw, -PI, PI))
 	_last_player_yaw = current_yaw
 
 	if _stalker_toggle_timer > 0.0:
