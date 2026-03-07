@@ -35,11 +35,17 @@ mesh = ExtResource("1_8iyjh")
 [node name="Player" parent="." unique_id=1856716769 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7708807, 5)
 
-[node name="Monster1" parent="." unique_id=487009761 instance=ExtResource("2")]
+[node name="MonsterLurker" parent="." unique_id=487009761 instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.742435, 0)
+monster_type = 0
 
-[node name="Monster2" parent="." unique_id=398709193 instance=ExtResource("2")]
+[node name="MonsterLeech" parent="." unique_id=398709193 instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.73390555, 0)
+monster_type = 1
+
+[node name="MonsterStalker" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73390555, -6)
+monster_type = 2
 
 [node name="CaveGOOD" parent="." unique_id=774864290 instance=ExtResource("5_ctil2")]
 transform = Transform3D(4.395, 0, 0, 0, 4.395, 0, 0, 0, 4.395, 6.8369684, 4.79054, 22.500938)

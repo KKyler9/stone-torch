@@ -1,5 +1,11 @@
 extends CharacterBody3D
 
+# Player controller + interaction and torch fueling.
+# Hotbar design:
+# [1] moss  -> volatile short-term play
+# [2] cloth -> emergency visibility burst
+# [3] resin -> stable long-form exploration
+
 @export var speed := 5.0
 @export var jump_velocity := 4.5
 @export var mouse_sensitivity := 0.003

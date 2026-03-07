@@ -1,5 +1,11 @@
 extends Area3D
 
+# Trap interaction logic.
+# Each trap can be disabled by consuming one specific item type.
+# Tuning:
+# - `fuel_damage` controls how punishing accidental trigger is.
+# - `disable_item` controls exploration routing and item pressure.
+
 @export var trap_name := "Trap"
 @export var disable_item := "cloth"
 @export var fuel_damage := 14.0

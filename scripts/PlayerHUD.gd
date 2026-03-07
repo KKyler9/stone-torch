@@ -1,6 +1,8 @@
 extends CanvasLayer
 class_name PlayerHUD
 
+# HUD helper for interaction prompts, event feedback, and fuel-item hotbar.
+
 @onready var root: Control = $Root
 @onready var prompt_label: Label = $Root/PromptLabel
 @onready var feedback_label: Label = $Root/FeedbackLabel
@@ -14,6 +16,7 @@ func _ready():
 	_disable_input_capture()
 
 func _disable_input_capture():
+	# Ensure HUD never steals gameplay clicks/raycast focus.
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	prompt_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	feedback_label.mouse_filter = Control.MOUSE_FILTER_IGNORE

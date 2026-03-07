@@ -1,5 +1,11 @@
 extends Node3D
 
+# CaveZone procedurally creates simple interactables at runtime.
+# This keeps the prototype scene lightweight and centralizes item/trap setup.
+# Tuning guide:
+# - Add/remove collectible spawn calls in _build_collectibles()
+# - Change trap costs by swapping disable_item in _build_traps()
+
 const COLLECTIBLE_SCENE := preload("res://scripts/Collectible.gd")
 const TRAP_SCENE := preload("res://scripts/CaveTrap.gd")
 const DOOR_SCENE := preload("res://scripts/CaveDoor.gd")
@@ -10,10 +16,20 @@ func _ready():
 	_build_door()
 
 func _build_collectibles():
+	# Spawn counts intentionally higher for rapid tuning/testing loops.
+	# Reduce this list back down once balance pass is complete.
 	_spawn_collectible(Vector3(2.5, 0.4, 3.0), "moss", Color(0.2, 0.8, 0.3))
 	_spawn_collectible(Vector3(-2.0, 0.4, 1.5), "moss", Color(0.2, 0.8, 0.3))
+	_spawn_collectible(Vector3(3.2, 0.4, 0.9), "moss", Color(0.2, 0.8, 0.3))
+	_spawn_collectible(Vector3(-1.2, 0.4, -1.5), "moss", Color(0.2, 0.8, 0.3))
+
 	_spawn_collectible(Vector3(1.0, 0.4, -2.0), "cloth", Color(0.75, 0.75, 0.75))
+	_spawn_collectible(Vector3(2.2, 0.4, -3.0), "cloth", Color(0.75, 0.75, 0.75))
+	_spawn_collectible(Vector3(-3.6, 0.4, -0.2), "cloth", Color(0.75, 0.75, 0.75))
+
 	_spawn_collectible(Vector3(-3.0, 0.4, -2.5), "resin", Color(0.9, 0.55, 0.1))
+	_spawn_collectible(Vector3(0.2, 0.4, 2.8), "resin", Color(0.9, 0.55, 0.1))
+	_spawn_collectible(Vector3(4.0, 0.4, 1.7), "resin", Color(0.9, 0.55, 0.1))
 
 func _spawn_collectible(pos: Vector3, item_name: String, color: Color):
 	var collectible := Area3D.new()
